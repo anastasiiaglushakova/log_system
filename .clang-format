@@ -1,0 +1,11 @@
+BasedOnStyle: Google
+IndentWidth: 2
+ContinuationIndentWidth: 2
+ColumnLimit: 60
+BreakBeforeBinaryOperators: All
+PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakAssignment: 1
+AllowShortBlocksOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlignOperands: true

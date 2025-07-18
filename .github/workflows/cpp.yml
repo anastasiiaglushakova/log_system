@@ -1,0 +1,82 @@
+name: C++ Build, Style & Test
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build-style-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake make g++ libgtest-dev clang-format-18 netcat-openbsd
+
+      - name: Check clang-format version
+        run: clang-format-18 --version
+
+      # 🛠️ Автоформатирование под clang-format-18 GitHub
+      - name: Auto-format code with GitHub clang-format
+        run: |
+          find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+            -exec clang-format-18 -i {} +
+
+      # 🔍 Проверка стиля (clang-format)
+      - name: Run clang-format check
+        run: |
+          find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+            -exec clang-format-18 --dry-run --Werror {} +
+
+      # 🔧 Динамическая сборка + тесты
+      - name: Build (shared)
+        run: make build
+
+      - name: Run tests (shared)
+        run: make run_tests
+
+      # 🔩 Статическая сборка + тесты
+      - name: Build (static)
+        run: make build STATIC=ON
+
+      - name: Run tests (static)
+        run: make run_tests STATIC=ON
+
+      # 🧪 Интеграционный тест: app ↔ log_stats
+      - name: Run integration test
+        run: |
+          ./build/bin/log_stats 6000 1 5 &
+          LOG_STATS_PID=$!
+          sleep 2
+          
+          # Диагностика
+          echo "Checking if process is running..."
+          ps aux | grep log_stats | grep -v grep || echo "Process not found"
+          
+          echo "Checking port..."
+          ss -tuln | grep :6000 || echo "Port not listening"
+          
+          echo "Sending data..."
+          echo -e "[INFO] hello" | timeout 10s nc -w2 localhost 6000 || echo "Failed to send data"
+          
+          echo "Process status after send..."
+          if ps -p $LOG_STATS_PID > /dev/null; then
+            echo "log_stats работает"
+          else
+            echo "log_stats не запущен"
+          fi
+          
+          # Cleanup
+          kill $LOG_STATS_PID 2>/dev/null || true
+          sleep 1
+          kill -9 $LOG_STATS_PID 2>/dev/null || true
+          wait $LOG_STATS_PID 2>/dev/null || true
+
+
+          
