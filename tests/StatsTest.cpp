@@ -132,7 +132,7 @@ TEST(StatsTest, MultipleSameLevel) {
   double expectedAvg = 0;
   for (int i = 0; i < 10; i++) {
     expectedAvg
-      += std::string("Message " + std::to_string(i)).size();
+      += static_cast<double>(std::string("Message " + std::to_string(i)).size());
   }
   expectedAvg /= 10.0;
 

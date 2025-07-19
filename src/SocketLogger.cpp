@@ -26,7 +26,7 @@ SocketLogger::SocketLogger(const std::string &host,
   sockaddr_in serverAddr{};
   serverAddr.sin_family = AF_INET;  // Используем IPv4
   serverAddr.sin_port = htons(
-    port);  // Устанавливаем порт (в сетевом порядке байт)
+    static_cast<uint16_t>(port));  // Устанавливаем порт (в сетевом порядке байт)
   inet_pton(
     AF_INET, host.c_str(),
     &serverAddr

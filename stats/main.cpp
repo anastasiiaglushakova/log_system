@@ -53,7 +53,7 @@ void printStats() {
 
   // Считаем количество сообщений за последний час
   time_t now = time(nullptr);
-  int countLastHour
+  auto countLastHour
     = count_if(entries.begin(), entries.end(),
                [now](const LogEntry &e) {
                  return now - e.timestamp <= 3600;
@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
   address.sin_family = AF_INET;
   address.sin_addr.s_addr
     = INADDR_ANY;  // Привязываемся ко всем интерфейсам
-  address.sin_port = htons(port);
+  address.sin_port = htons(static_cast<uint16_t>(port));
 
   // Привязываем сокет к адресу
   if (bind(server_fd, (struct sockaddr *)&address,

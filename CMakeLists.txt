@@ -7,6 +7,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)  # Включаем компиляцию
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)  # Опция для сборки библиотеки как shared (по умолчанию включена)
 
+# Устанавливаем универсальные флаги компилятора
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pedantic -O2 \
+    -fstack-protector-strong -Wshadow -Wconversion -Wfloat-equal")
+
 # Добавляем подпроекты (поддиректории) с исходниками и приложениями
 add_subdirectory(src)    # Исходники библиотеки логирования
 add_subdirectory(app)    # Приложение логгера или клиент
