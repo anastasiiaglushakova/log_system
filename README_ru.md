@@ -22,7 +22,7 @@
 ├── tests/                 # Юнит-тесты (Google Test)
 ├── CMakeLists.txt         # Главный CMake-файл
 ├── Makefile               # Упрощённая сборка и запуск
-└── README.md              # Этот файл
+└── README_ru.md              # Этот файл
 ```
 
 ---
